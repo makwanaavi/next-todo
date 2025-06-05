@@ -6,12 +6,6 @@ import TodoForm from "../../components/TodoForm";
 import { useTheme } from "next-themes";
 import { MoonIcon, SunIcon } from "lucide-react";
 
-// const todosData = [
-//   { id: 1, text: "Learn Next.js 15", completed: false },
-//   { id: 2, text: "Master Node.js", completed: true },
-//   { id: 3, text: "Learn MongoDB", completed: true },
-// ];
-
 export default function Home() {
   const [todos, setTodos] = useState([]);
   const { theme = "dark", setTheme } = useTheme();
@@ -23,11 +17,9 @@ export default function Home() {
   const fetchtodo = async () => {
     const response = await fetch("/todos");
     const todosdata = await response.json();
-    setTodos(todosdata);
+    setTodos(todosdata.reverse());
   };
 
-
-  
   // Add new todo
   const addTodo = async (text) => {
     const response = await fetch("/todos", {
@@ -39,17 +31,23 @@ export default function Home() {
   };
 
   // Delete todo
-  const deleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+  const deleteTodo = async (id) => {
+    const response = await fetch(`/todos/${id}`, { method: "DELETE" });
+    if (response.status == 204) {
+      fetchtodo();
+    }
   };
 
   // Toggle todo completion
-  const toggleTodo = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
+  const toggleTodo = async (id) => {
+    const todo = todos.find((todo) => todo.id === id);
+    const response = await fetch(`./todos.json/${id}`, {
+      method: 200,
+      body: JSON.stringify({ completed: !todos.completed }),
+    });
+    if (response.status === 200) {
+      fetchtodo();
+    }
   };
 
   // Update todo text

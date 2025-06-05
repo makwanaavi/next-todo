@@ -69,12 +69,23 @@
 //   });
 // }
 
+import { readFile } from "fs/promises";
 import todos from "../../../todos.json";
 import { writeFile } from "fs/promises";
+import db from "../../../lib/ConnectDB";
 
-export function GET() {
+export async function GET() {
+
+  const result = await db.collection("users").insertOne({name : "Avi"})
+
+   const todoJsonstring = await  readFile("./todos.json", "utf-8")
+   const todos = JSON.parse(todoJsonstring)
   return Response.json(todos);
+
+
+
 }
+
 export async function POST(requset) {
   const todo = await requset.json();
   const newtodo = {
