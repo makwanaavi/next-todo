@@ -26,6 +26,8 @@ export default function Home() {
     setTodos(todosdata);
   };
 
+
+  
   // Add new todo
   const addTodo = async (text) => {
     const response = await fetch("/todos", {
