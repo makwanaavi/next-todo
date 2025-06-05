@@ -12,7 +12,7 @@ const TodoItem = ({ todo, deleteTodo, toggleTodo, updateTodo }) => {
     setEditText(todo.text);
   };
 
-  const handleSave = () => {
+  const handleSave = () => {rgb(255, 255, 255)
     if (editText.trim()) {
       updateTodo(todo.id, editText.trim());
       setIsEditing(false);
