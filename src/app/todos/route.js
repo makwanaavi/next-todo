@@ -72,28 +72,43 @@
 import { readFile } from "fs/promises";
 import todos from "../../../todos.json";
 import { writeFile } from "fs/promises";
-import db from "../../../lib/ConnectDB";
+import { ConnectDb } from "../../../lib/ConnectDB";
+// import mongoose from "mongoose";
+import Todo from "../../../models/todoModel";
 
 export async function GET() {
+  await ConnectDb();
+  // const result = await mongoose.connection.db
+  //   .collection("todos")
+  //   // .insertMany([{title : "Learn Node.js", completed : false}])
+  //   .insertOne({ title: "Learn Node.js", completed: false });
+  // console.log(result);
 
-  const result = await db.collection("users").insertOne({name : "Avi"})
+  // const result = await Todo.find()
+  // console.log(result)
 
-   const todoJsonstring = await  readFile("./todos.json", "utf-8")
-   const todos = JSON.parse(todoJsonstring)
-  return Response.json(todos);
+  const allTodo =  await Todo.find() 
 
-
-
+  // const todoJsonstring = await readFile("./todos.json", "utf-8");
+  // const todos = JSON.parse(todoJsonstring);
+  return Response.json(allTodo.map(({id, text, completed}) => ({id, text, completed})));
 }
 
 export async function POST(requset) {
   const todo = await requset.json();
-  const newtodo = {
-    id: crypto.randomUUID(),
-    text: todo.text,
-    completed: "false",
-  };
-  todos.push(newtodo);
-  writeFile("todos.json", JSON.stringify(todos, null, 1));
-  return Response.json(newtodo);
+  const {id, text, completed} = await Todo.create({text: todo.text})
+  
+  
+  // {
+  //   id: crypto.randomUUID(),
+  //   text: todo.text,
+  //   completed: "false",
+  // };
+
+  // todos.push(newtodo);
+  // writeFile("todos.json", JSON.stringify(todos, null, 1));
+
+  return Response.json({id, text, completed}  ,{
+    status : 201, 
+  });
 }
