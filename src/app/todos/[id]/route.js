@@ -57,39 +57,44 @@
 //   return Response.json(editetodo);
 // }
 
-export async function PUT(request, { params }) {
-  const editTodoData = await request.json();
-  const { id } = await params;
-  const todoIndex = todos.findIndex((todo) => id === todo.id);
-  const todo = todos[todoIndex];
+// export async function PUT(request, { params }) {
+//   const editTodoData = await request.json();
+//   const { id } = await params;
+// const todoIndex = todos.findIndex((todo) => id === todo.id);
+// const todo = todos[todoIndex];
 
-  if (editTodoData.id) {
-    return Response.json(
-      { error: "Changing ID is not allow." },
-      {
-        status: 403,
-      }
-    );
-  }
+// if (editTodoData.id) {
+//   return Response.json(
+//     { error: "Changing ID is not allow." },
+//     {
+//       status: 403,
+//     }
+//   );
+// }
 
-  const editedTodo = { ...todo, ...editTodoData };
-  todos[todoIndex] = editedTodo;
+// const editedTodo = { ...todo, ...editTodoData };
+// todos[todoIndex] = editedTodo;
 
-  await writeFile("todos.json", JSON.stringify(todos, null, 2));
-  return new Response(JSON.stringify(todos[todoIndex]), {
-    status: 200,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-}
+// await writeFile("todos.json", JSON.stringify(todos, null, 2));
+
+// const editeTodo = await Todo.findByIdAndUpdate(id, editTodoData, { new: true });
+// return new Response(JSON.stringify(todos[todoIndex]), {
+//   status: 200,
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+// }
+// )
+//   return Response.json(editeTodo);
+// }
 
 // import todos from "../../../../todos.json";
-export function GET(_, context) {
-  console.log("Hello");
-  console.log(context);
-  const { id } = context.params;
-  const todo = todos.find((item) => item.id == id);
+
+export async function GET(_, { params }) {
+  await ConnectDb();
+  const { id } = await params;
+  // const todo = todos.find((item) => item.id == id);
+  const todo = await Todo.findById(id);
   if (!todo) {
     return new Response(JSON.stringify({ message: "Todo not found" }), {
       status: 404,
@@ -107,24 +112,34 @@ export function GET(_, context) {
   });
 }
 
-import { writeFile } from "fs/promises";
-import todos from "../../../../todos.json";
+export async function PUT(request, { params }) {
+  await ConnectDb();
+  const editTodoData = await request.json();
+  const { id } = await params;
+  const editeTodo = await Todo.findByIdAndUpdate(id, editTodoData, {
+    new: true,
+  });
+  return Response.json(editeTodo);
+}
+
+import { ConnectDb } from "../../../../lib/ConnectDB";
+// import { writeFile } from "fs/promises";
+// import todos from "../../../../todos.json";
+import Todo from "../../../../models/todoModel";
 
 export async function DELETE(_, { params }) {
+  await ConnectDb();
   const { id } = await params;
-  const todoIndex = todos.findIndex((todo) => todo.id === id);
-
-  if (todoIndex === -1) {
-    return new Response(JSON.stringify({ error: "Todo not found" }), {
-      status: 404,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  todos.splice(todoIndex, 1);
-
-  await writeFile("todos.json", JSON.stringify(todos, null, 2));
-
+  await Todo.findByIdAndDelete(id);
+  // const todoIndex = todos.findIndex((todo) => todo.id === id);
+  // if (todoIndex === -1) {
+  //   return new Response(JSON.stringify({ error: "Todo not found" }), {
+  //     status: 404,
+  //     headers: { "Content-Type": "application/json" },
+  //   });
+  // }
+  // todos.splice(todoIndex, 1);
+  // await writeFile("todos.json", JSON.stringify(todos, null, 2));
   return new Response(null, {
     status: 204,
     statusText: "Okay Bhai tera Todo delete ho gaya hai!",

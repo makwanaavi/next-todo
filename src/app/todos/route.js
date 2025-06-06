@@ -69,11 +69,11 @@
 //   });
 // }
 
-import { readFile } from "fs/promises";
-import todos from "../../../todos.json";
-import { writeFile } from "fs/promises";
-import { ConnectDb } from "../../../lib/ConnectDB";
+// import { readFile } from "fs/promises";
+// import todos from "../../../todos.json";
+// import { writeFile } from "fs/promises";
 // import mongoose from "mongoose";
+import { ConnectDb } from "../../../lib/ConnectDB";
 import Todo from "../../../models/todoModel";
 
 export async function GET() {
@@ -88,7 +88,6 @@ export async function GET() {
   // console.log(result)
 
   const allTodo =  await Todo.find() 
-
   // const todoJsonstring = await readFile("./todos.json", "utf-8");
   // const todos = JSON.parse(todoJsonstring);
   return Response.json(allTodo.map(({id, text, completed}) => ({id, text, completed})));
@@ -97,14 +96,11 @@ export async function GET() {
 export async function POST(requset) {
   const todo = await requset.json();
   const {id, text, completed} = await Todo.create({text: todo.text})
-  
-  
   // {
   //   id: crypto.randomUUID(),
   //   text: todo.text,
   //   completed: "false",
   // };
-
   // todos.push(newtodo);
   // writeFile("todos.json", JSON.stringify(todos, null, 1));
 
