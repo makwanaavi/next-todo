@@ -73,8 +73,8 @@
 // import todos from "../../../todos.json";
 // import { writeFile } from "fs/promises";
 // import mongoose from "mongoose";
-import { ConnectDb } from "../../../lib/ConnectDB";
-import Todo from "../../../models/todoModel";
+import { ConnectDb } from "../../../../lib/ConnectDB";
+import Todo from "../../../../models/todoModel";
 
 export async function GET() {
   await ConnectDb();
@@ -87,15 +87,17 @@ export async function GET() {
   // const result = await Todo.find()
   // console.log(result)
 
-  const allTodo =  await Todo.find() 
+  const allTodo = await Todo.find();
   // const todoJsonstring = await readFile("./todos.json", "utf-8");
   // const todos = JSON.parse(todoJsonstring);
-  return Response.json(allTodo.map(({id, text, completed}) => ({id, text, completed})));
+  return Response.json(
+    allTodo.map(({ id, text, completed }) => ({ id, text, completed }))
+  );
 }
 
 export async function POST(requset) {
   const todo = await requset.json();
-  const {id, text, completed} = await Todo.create({text: todo.text})
+  const { id, text, completed } = await Todo.create({ text: todo.text });
   // {
   //   id: crypto.randomUUID(),
   //   text: todo.text,
@@ -104,7 +106,10 @@ export async function POST(requset) {
   // todos.push(newtodo);
   // writeFile("todos.json", JSON.stringify(todos, null, 1));
 
-  return Response.json({id, text, completed}  ,{
-    status : 201, 
-  });
+  return Response.json(
+    { id, text, completed },
+    {
+      status: 201,
+    }
+  );
 }

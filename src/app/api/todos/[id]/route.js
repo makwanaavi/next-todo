@@ -122,10 +122,10 @@ export async function PUT(request, { params }) {
   return Response.json(editeTodo);
 }
 
-import { ConnectDb } from "../../../../lib/ConnectDB";
+import { ConnectDb } from "../../../../../lib/ConnectDB";
 // import { writeFile } from "fs/promises";
 // import todos from "../../../../todos.json";
-import Todo from "../../../../models/todoModel";
+import Todo from "../../../../../models/todoModel";
 
 export async function DELETE(_, { params }) {
   await ConnectDb();
